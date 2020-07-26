@@ -1,0 +1,107 @@
+.main-container {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+
+  .carousel-container {
+    position: relative;
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .carousel-controls {
+      position: absolute;
+      z-index: 20000;
+      width: 120%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .control {
+        width: 50px;
+        height: 50px;
+        border-radius: 100px;
+        background-color: orange;
+        cursor: pointer;
+
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+        &:hover {
+          background-color: orangered;
+        }
+
+        &:active {
+          background-color: orange;
+        }
+
+        &.disabled {
+          pointer-events: none;
+          transform: scale(0.8);
+        }
+      }
+    }
+    .slides-container {
+      position: relative;
+
+      .slide {
+        position: absolute;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bolder;
+        font-size: 4rem;
+
+        border-radius: 20px;
+        background-color: rgb(46, 43, 49);
+
+        transition: all 0.2s ease-in-out;
+
+        &.first {
+          left: 0;
+          opacity: 0.1;
+          transform: scale(0.6) translateX(50px);
+          z-index: 2;
+        }
+        &.second {
+          left: 25%;
+          opacity: 0.5;
+          transform: scale(0.8);
+          z-index: 3;
+        }
+        &.center {
+          left: 50%;
+          z-index: 4;
+        }
+        &.fourth {
+          left: 75%;
+          opacity: 0.5;
+          transform: scale(0.8);
+          z-index: 3;
+        }
+        &.last {
+          left: 100%;
+          opacity: 0.1;
+          transform: scale(0.6) translateX(-50px);
+          z-index: 2;
+        }
+        &.left {
+          left: 0;
+          opacity: 0;
+          transform: scale(0.6);
+          z-index: 1;
+          // transition: left 0s linear;
+        }
+        &.right {
+          left: 100%;
+          opacity: 0;
+          transform: scale(0.6);
+          z-index: 2;
+          // transition: left 0s linear;
+        }
+      }
+    }
+  }
+}

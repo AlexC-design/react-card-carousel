@@ -1,0 +1,118 @@
+.main-container {
+  margin: 40px 0;
+  position: relative;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.main-container .carousel-container {
+  position: relative;
+  width: 80%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.main-container .carousel-container .carousel-controls {
+  position: absolute;
+  z-index: 20000;
+  width: 120%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.main-container .carousel-container .carousel-controls .control {
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  background-color: orange;
+  cursor: pointer;
+  -webkit-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.main-container .carousel-container .carousel-controls .control:hover {
+  background-color: orangered;
+}
+
+.main-container .carousel-container .carousel-controls .control:active {
+  background-color: orange;
+}
+
+.main-container .carousel-container .carousel-controls .control.disabled {
+  pointer-events: none;
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
+}
+
+.main-container .carousel-container .slides-container {
+  position: relative;
+}
+
+.main-container .carousel-container .slides-container .slide {
+  overflow: hidden;
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: white;
+  font-weight: bolder;
+  font-size: 4rem;
+  border-radius: 0px;
+  background-color: #2e2b31;
+  -webkit-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.main-container .carousel-container .slides-container .slide .slide-content {
+  position: absolute;
+  width: 110%;
+  height: 110%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.main-container .carousel-container .slides-container .slide .slide-content .cover {
+  position: absolute;
+  background-color: white;
+  width: 110%;
+  height: 110%;
+  -webkit-transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+/*# sourceMappingURL=carousel2.css.map */

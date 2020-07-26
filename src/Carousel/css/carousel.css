@@ -1,0 +1,141 @@
+.main-container {
+  position: relative;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}
+
+.main-container .carousel-container {
+  position: relative;
+  width: 80%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.main-container .carousel-container .carousel-controls {
+  position: absolute;
+  z-index: 20000;
+  width: 120%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.main-container .carousel-container .carousel-controls .control {
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+  background-color: orange;
+  cursor: pointer;
+  -webkit-transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.main-container .carousel-container .carousel-controls .control:hover {
+  background-color: orangered;
+}
+
+.main-container .carousel-container .carousel-controls .control:active {
+  background-color: orange;
+}
+
+.main-container .carousel-container .carousel-controls .control.disabled {
+  pointer-events: none;
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
+}
+
+.main-container .carousel-container .slides-container {
+  position: relative;
+}
+
+.main-container .carousel-container .slides-container .slide {
+  position: absolute;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  color: white;
+  font-weight: bolder;
+  font-size: 4rem;
+  border-radius: 20px;
+  background-color: #2e2b31;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.main-container .carousel-container .slides-container .slide.first {
+  left: 0;
+  opacity: 0.1;
+  -webkit-transform: scale(0.6) translateX(50px);
+          transform: scale(0.6) translateX(50px);
+  z-index: 2;
+}
+
+.main-container .carousel-container .slides-container .slide.second {
+  left: 25%;
+  opacity: 0.5;
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
+  z-index: 3;
+}
+
+.main-container .carousel-container .slides-container .slide.center {
+  left: 50%;
+  z-index: 4;
+}
+
+.main-container .carousel-container .slides-container .slide.fourth {
+  left: 75%;
+  opacity: 0.5;
+  -webkit-transform: scale(0.8);
+          transform: scale(0.8);
+  z-index: 3;
+}
+
+.main-container .carousel-container .slides-container .slide.last {
+  left: 100%;
+  opacity: 0.1;
+  -webkit-transform: scale(0.6) translateX(-50px);
+          transform: scale(0.6) translateX(-50px);
+  z-index: 2;
+}
+
+.main-container .carousel-container .slides-container .slide.left {
+  left: 0;
+  opacity: 0;
+  -webkit-transform: scale(0.6);
+          transform: scale(0.6);
+  z-index: 1;
+}
+
+.main-container .carousel-container .slides-container .slide.right {
+  left: 100%;
+  opacity: 0;
+  -webkit-transform: scale(0.6);
+          transform: scale(0.6);
+  z-index: 2;
+}
+/*# sourceMappingURL=carousel.css.map */
