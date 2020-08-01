@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import "./css/carousel2.css";
+import React, { useState, useEffect, useRef } from "react";
+import "./css/carousel3.css";
 
-const Carousel = () => {
+const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   const [slideHeight, setSlideHeight] = useState(100);
   const [slideWidth, setSlideWitdh] = useState(0);
   const [preferredSlideWidth, setPreferredSlideWitdh] = useState(100);
@@ -11,24 +11,35 @@ const Carousel = () => {
   const [slices, setSlices] = useState([]);
   const [slicePercentage, setSlicePercentage] = useState({ left: 1, right: 1 });
   const [slidePadding, setSlidePadding] = useState(0.95);
+  const [positionsMoved, setPositionsMoved] = useState(0);
+  const [individualSlideMoved, setIndividualSlideMoved] = useState(0);
+  const [updated, setUpdated] = useState(false);
 
-  const slides = new Array(20).fill("test");
+  const firstSlide = useRef(null);
+  const secondSlide = useRef(null);
+
+  const slides = new Array(11).fill("test");
 
   // ------------------------- INDEX TO VALUES -------------------------
   const indexToPosition = index => {
+    // return 50;
     return (
       50 +
+      // GRADUAL TRANSITION
+      // slices[index] *
+      //   (slicePercentage[slices[index] < 0 ? "left" : "right"] +
+      //     8 -
+      //     Math.abs(slices[index]))
+
       slices[index] *
-        (slicePercentage[slices[index] < 0 ? "left" : "right"] +
-          8 -
-          Math.abs(slices[index]))
+        (slicePercentage[slices[index] < 0 ? "left" : "right"] + 2)
     );
   };
 
   const indexToSize = index => {
+    return 1;
     const sizeFromIndex = 1 - Math.abs(slices[index]) / 10;
     return sizeFromIndex > 0 ? sizeFromIndex : 0;
-    return 1;
   };
 
   const indexToOpacity = index => {
@@ -37,11 +48,12 @@ const Carousel = () => {
   };
 
   const indexToCoverOpacity = index => {
-    return (Math.abs(slices[index]) / 80) * Math.abs(slices[index]);
     return 0;
+    return (Math.abs(slices[index]) / 80) * Math.abs(slices[index]);
   };
 
   const indexToZIndex = index => {
+    return 1;
     return Math.floor(slides.length / 2) - Math.abs(slices[index]);
   };
 
@@ -51,7 +63,9 @@ const Carousel = () => {
       height: `${slideHeight}px`,
       width: `${slideWidth}px`,
       zIndex: indexToZIndex(index),
-      left: `${indexToPosition(index)}%`,
+      left: dragging
+        ? `calc(${indexToPosition(index)}% - ${individualSlideMoved}px)`
+        : `${indexToPosition(index)}%`,
       opacity: indexToOpacity(index),
       transform: `scale(${indexToSize(index)})`
     };
@@ -104,38 +118,8 @@ const Carousel = () => {
     disableControl("left");
   };
 
-  // ------------------------- GESTURE SWIPE -------------------------
-
-  let initialPosition = 0;
-  let currentPosition = 0;
-
-  function handleDrag(e) {
-    if (initialPosition === 0) {
-      initialPosition = e.clientX;
-    } else {
-      currentPosition = e.clientX;
-      console.log(initialPosition - currentPosition);
-      if (initialPosition - currentPosition > 50) {
-        nextSlide();
-      }
-      if (initialPosition - currentPosition < -50) {
-        prevSlide();
-      }
-    }
-  }
-
-  const handleClick = () => {
-    console.log("draging");
-    window.addEventListener("mousemove", handleDrag);
-  };
-  const handleRelease = () => {
-    console.log("released");
-    window.removeEventListener("mousemove", handleDrag);
-  };
-
   // ------------------------- MOUNT -------------------------
   useEffect(() => {
-    console.log("MOUNTED");
     //creating slices array [0, 1, 2 ... L/2 ... -2, -1]
     let slicesArray = [];
     for (let i = 0; i <= slides.length / 2; i++) {
@@ -166,8 +150,6 @@ const Carousel = () => {
 
   // ------------------------- UPDATE -------------------------
   useEffect(() => {
-    console.log("UPDATING");
-
     let timeoutId;
     window.addEventListener("resize", () => {
       timeoutId = setTimeout(() => {
@@ -179,22 +161,57 @@ const Carousel = () => {
       }, 500);
     });
 
+    // console.log({ updated });
+    // console.log(slices);
+    // console.log({ positionsMoved });
+    // console.log({ individualSlideMoved });
+    console.log("108:", carouselWidth / slicePercentage.left);
+    console.log({ carouselWidth }, slicePercentage.left);
+
+    if (!updated) {
+      setIndividualSlideMoved(
+        delta - Math.abs(positionsMoved) * individualSlideMoved
+      );
+
+      if (delta < -108) {
+        prevSlide();
+        setPositionsMoved(positionsMoved - 1);
+        setUpdated(true);
+      } else if (delta > 108) {
+        nextSlide();
+        setPositionsMoved(positionsMoved + 1);
+        setUpdated(true);
+      }
+    } else {
+      setIndividualSlideMoved(0);
+    }
+
     return () => {
       clearTimeout(timeoutId);
-      handleRelease();
+      if (!dragging) {
+        setPositionsMoved(0);
+        setIndividualSlideMoved(0);
+        setUpdated(false);
+      }
+      // handleRelease();
     };
   });
 
   return (
     <div
       className="main-container"
-      onMouseDown={handleClick}
-      onMouseUp={handleRelease}
+      // onMouseDown={handleClick}
+      // onMouseUp={handleRelease}
     >
       <div className="carousel-container">
         <div className="slides-container" style={slidesContainerStyle}>
           {slides.map((slide, index) => (
-            <div className="slide" key={index} style={slideStyle(index)}>
+            <div
+              className="slide"
+              key={index}
+              style={slideStyle(index)}
+              ref={null}
+            >
               <div className="slide-content">
                 <div className="cover" style={coverStyle(index)} />
                 <p>{index}</p>

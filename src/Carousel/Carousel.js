@@ -8,7 +8,7 @@ const Carousel = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState(1);
   const [controlDisabled, setControlDisabled] = useState("none");
 
-  const slides = new Array(6).fill("test");
+  const slides = new Array(20).fill("test");
 
   const indexToPosition = index => {
     if (activeSlideIndex - 1 <= 0) {

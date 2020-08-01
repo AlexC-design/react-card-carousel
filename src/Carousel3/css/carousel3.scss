@@ -1,0 +1,94 @@
+.main-container {
+    margin: 40px 0;
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  
+    .carousel-container {
+      position: relative;
+      width: 80%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  
+      .carousel-controls {
+        position: absolute;
+        z-index: 20000;
+        width: 120%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+  
+        .control {
+          width: 50px;
+          height: 50px;
+          border-radius: 100px;
+          background-color: orange;
+          cursor: pointer;
+  
+          transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  
+          &:hover {
+            background-color: orangered;
+          }
+  
+          &:active {
+            background-color: orange;
+          }
+  
+          &.disabled {
+            pointer-events: none;
+            transform: scale(0.8);
+          }
+        }
+      }
+      .slides-container {
+        position: relative;
+        user-select: none;
+        background-color: orange;
+
+
+        .slide {
+          overflow: hidden;
+          position: absolute;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+          font-weight: bolder;
+          font-size: 1rem;
+          box-shadow: 0 0 20px 0px rgba(black, 0.3);
+          border-radius: 20px;
+  
+          background-color: rgb(46, 43, 49);
+  
+          transition: all 0s linear;
+  
+          .slide-content {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+  
+            p {
+              margin: 10px;
+            }
+
+            .cover {
+              position: absolute;
+              background-color: white;
+              width: 110%;
+              height: 110%;
+  
+              transition: all 0s linear;
+            }
+          }
+        }
+      }
+    }
+  }
+  
