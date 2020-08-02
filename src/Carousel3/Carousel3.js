@@ -5,7 +5,7 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   const [slideHeight, setSlideHeight] = useState(400);
   const [slideWidth, setSlideWitdh] = useState(0);
   const [preferredSlideWidth, setPreferredSlideWitdh] = useState(150);
-  const [carouselWidth, setCarouselWidth] = useState(900);
+  const [carouselWidth, setCarouselWidth] = useState(800);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [slices, setSlices] = useState([]);
   const [slicePercentage, setSlicePercentage] = useState({ left: 1, right: 1 });
@@ -18,7 +18,7 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   const firstSlide = useRef(null);
   const secondSlide = useRef(null);
 
-  const slides = new Array(7).fill("test");
+  const slides = new Array(5).fill("test");
 
   // ------------------------- INDEX TO VALUES -------------------------
   const indexToPosition = index => {
