@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from "react";
 import "./css/carousel3.css";
 
 const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
-  const [slideHeight, setSlideHeight] = useState(100);
+  const [slideHeight, setSlideHeight] = useState(400);
   const [slideWidth, setSlideWitdh] = useState(0);
-  const [preferredSlideWidth, setPreferredSlideWitdh] = useState(100);
-  const [carouselWidth, setCarouselWidth] = useState(900);
+  const [preferredSlideWidth, setPreferredSlideWitdh] = useState(200);
+  const [carouselWidth, setCarouselWidth] = useState(800);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
   const [controlDisabled, setControlDisabled] = useState("none");
   const [slices, setSlices] = useState([]);
@@ -14,11 +14,12 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   const [positionsMoved, setPositionsMoved] = useState(0);
   const [individualSlideMoved, setIndividualSlideMoved] = useState(0);
   const [updated, setUpdated] = useState(false);
+  const [distanceBetweenSlides, setDistanceBetweenSlides] = useState(0);
 
   const firstSlide = useRef(null);
   const secondSlide = useRef(null);
 
-  const slides = new Array(11).fill("test");
+  const slides = new Array(5).fill("test");
 
   // ------------------------- INDEX TO VALUES -------------------------
   const indexToPosition = index => {
@@ -150,6 +151,45 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
 
   // ------------------------- UPDATE -------------------------
   useEffect(() => {
+    setDistanceBetweenSlides(
+      secondSlide.current.getBoundingClientRect().x -
+        firstSlide.current.getBoundingClientRect().x
+    );
+    console.log(" - indiv slide moved:", individualSlideMoved);
+    console.log(" - positions moved:", positionsMoved);
+    console.log(" ");
+
+    if (!updated) {
+      setIndividualSlideMoved(
+        delta - Math.abs(positionsMoved) * individualSlideMoved
+      );
+
+      if (delta < -distanceBetweenSlides) {
+        prevSlide();
+        setPositionsMoved(positionsMoved - 1);
+        setUpdated(true);
+      } else if (delta > distanceBetweenSlides) {
+        nextSlide();
+        setPositionsMoved(positionsMoved + 1);
+        setUpdated(true);
+      }
+    } else {
+      setIndividualSlideMoved(0);
+    }
+
+    return () => {
+      if (!dragging) {
+        setPositionsMoved(0);
+        setIndividualSlideMoved(0);
+        setUpdated(false);
+      }
+      // handleRelease();
+    };
+  });
+
+  // ------------------------- HNANDLING RESIZE --------------------------
+
+  useEffect(() => {
     let timeoutId;
     window.addEventListener("resize", () => {
       timeoutId = setTimeout(() => {
@@ -161,39 +201,8 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
       }, 500);
     });
 
-    // console.log({ updated });
-    // console.log(slices);
-    // console.log({ positionsMoved });
-    // console.log({ individualSlideMoved });
-    console.log("108:", carouselWidth / slicePercentage.left);
-    console.log({ carouselWidth }, slicePercentage.left);
-
-    if (!updated) {
-      setIndividualSlideMoved(
-        delta - Math.abs(positionsMoved) * individualSlideMoved
-      );
-
-      if (delta < -108) {
-        prevSlide();
-        setPositionsMoved(positionsMoved - 1);
-        setUpdated(true);
-      } else if (delta > 108) {
-        nextSlide();
-        setPositionsMoved(positionsMoved + 1);
-        setUpdated(true);
-      }
-    } else {
-      setIndividualSlideMoved(0);
-    }
-
     return () => {
       clearTimeout(timeoutId);
-      if (!dragging) {
-        setPositionsMoved(0);
-        setIndividualSlideMoved(0);
-        setUpdated(false);
-      }
-      // handleRelease();
     };
   });
 
@@ -210,12 +219,11 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
               className="slide"
               key={index}
               style={slideStyle(index)}
-              ref={null}
+              ref={index === 0 ? firstSlide : index === 1 ? secondSlide : null}
             >
               <div className="slide-content">
                 <div className="cover" style={coverStyle(index)} />
                 <p>{index}</p>
-                <p>{slideWidth}px</p>
               </div>
             </div>
           ))}
@@ -235,6 +243,28 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
           />
         </div>
       </div>
+      <p>
+        delta: <b>{delta} </b>
+      </p>
+
+      <p>
+        individualSlideMoved: <b>{individualSlideMoved}px </b>
+      </p>
+      <p>
+        positionsMoved: <b>{positionsMoved} </b>
+      </p>
+      <p>
+        initialPosition: <b>{initialPosition} </b>
+      </p>
+      <p>
+        currentPosition: <b>{currentPosition} </b>
+      </p>
+      <p>
+        distanceBetweenSlides: <b>{distanceBetweenSlides}px</b>
+      </p>
+      <p>
+        slideWidth: <b>{slideWidth}px</b>
+      </p>
     </div>
   );
 };

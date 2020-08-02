@@ -19,7 +19,6 @@ class CarouselContainer extends React.Component {
       this.state.initialPosition = e.clientX;
     } else {
       this.state.currentPosition = e.clientX;
-
       this.setState({
         delta: this.state.initialPosition - this.state.currentPosition
       });
@@ -27,18 +26,21 @@ class CarouselContainer extends React.Component {
   };
 
   componentDidUpdate() {
-    console.log("delta", this.state.delta);
+    console.log("Parent CDU:");
+    console.log(" - delta:", this.state.delta);
+    console.log(" - initial mouse X:", this.state.initialPosition);
+    console.log(" - current mouse X:", this.state.currentPosition);
   }
 
   handleClick = () => {
-    console.log("touched");
+    console.log("%c touched ", "background: #000; color: #bada55");
     window.addEventListener("mousemove", this.handleDrag);
     this.setState({ dragging: true });
   };
   handleRelease = () => {
-    console.log("released");
-    this.setState({ delta: 0 });
+    console.log("%c released ", "background: #000; color: #bada55");
     window.removeEventListener("mousemove", this.handleDrag);
+    this.setState({ delta: 0, initialPosition: 0, currentPosition: 0 });
     this.setState({ dragging: false });
   };
 
