@@ -4,10 +4,9 @@ import "./css/carousel3.css";
 const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   const [slideHeight, setSlideHeight] = useState(400);
   const [slideWidth, setSlideWitdh] = useState(0);
-  const [preferredSlideWidth, setPreferredSlideWitdh] = useState(200);
-  const [carouselWidth, setCarouselWidth] = useState(800);
+  const [preferredSlideWidth, setPreferredSlideWitdh] = useState(150);
+  const [carouselWidth, setCarouselWidth] = useState(900);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [controlDisabled, setControlDisabled] = useState("none");
   const [slices, setSlices] = useState([]);
   const [slicePercentage, setSlicePercentage] = useState({ left: 1, right: 1 });
   const [slidePadding, setSlidePadding] = useState(0.95);
@@ -19,43 +18,15 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   const firstSlide = useRef(null);
   const secondSlide = useRef(null);
 
-  const slides = new Array(5).fill("test");
+  const slides = new Array(7).fill("test");
 
   // ------------------------- INDEX TO VALUES -------------------------
   const indexToPosition = index => {
-    // return 50;
     return (
       50 +
-      // GRADUAL TRANSITION
-      // slices[index] *
-      //   (slicePercentage[slices[index] < 0 ? "left" : "right"] +
-      //     8 -
-      //     Math.abs(slices[index]))
-
       slices[index] *
-        (slicePercentage[slices[index] < 0 ? "left" : "right"] + 2)
+        (slicePercentage[slices[index] < 0 ? "left" : "right"])
     );
-  };
-
-  const indexToSize = index => {
-    return 1;
-    const sizeFromIndex = 1 - Math.abs(slices[index]) / 10;
-    return sizeFromIndex > 0 ? sizeFromIndex : 0;
-  };
-
-  const indexToOpacity = index => {
-    return 1;
-    return 1 - Math.abs(slices[index]) / 10;
-  };
-
-  const indexToCoverOpacity = index => {
-    return 0;
-    return (Math.abs(slices[index]) / 80) * Math.abs(slices[index]);
-  };
-
-  const indexToZIndex = index => {
-    return 1;
-    return Math.floor(slides.length / 2) - Math.abs(slices[index]);
   };
 
   // ------------------------- STYLES -------------------------
@@ -63,18 +34,12 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
     return {
       height: `${slideHeight}px`,
       width: `${slideWidth}px`,
-      zIndex: indexToZIndex(index),
+      zIndex: 1,
       left: dragging
         ? `calc(${indexToPosition(index)}% - ${individualSlideMoved}px)`
         : `${indexToPosition(index)}%`,
-      opacity: indexToOpacity(index),
-      transform: `scale(${indexToSize(index)})`
-    };
-  };
-
-  const coverStyle = index => {
-    return {
-      opacity: indexToCoverOpacity(index)
+      opacity: 1,
+      transition: dragging ? "none" : `all 0.2s ease-out`
     };
   };
 
@@ -89,12 +54,6 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
   };
 
   // ------------------------- SLIDE FUNCTIONS -------------------------
-  const disableControl = side => {
-    setControlDisabled(side);
-    setTimeout(() => {
-      setControlDisabled("none");
-    }, 300);
-  };
 
   const nextSlide = () => {
     let slicesArray = [...slices];
@@ -105,7 +64,6 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
     } else {
       setActiveSlideIndex(activeSlideIndex + 1);
     }
-    disableControl("right");
   };
   const prevSlide = () => {
     let slicesArray = [...slices];
@@ -116,7 +74,6 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
     } else {
       setActiveSlideIndex(activeSlideIndex - 1);
     }
-    disableControl("left");
   };
 
   // ------------------------- MOUNT -------------------------
@@ -159,22 +116,24 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
     console.log(" - positions moved:", positionsMoved);
     console.log(" ");
 
-    if (!updated) {
-      setIndividualSlideMoved(
-        delta - Math.abs(positionsMoved) * individualSlideMoved
-      );
+    setIndividualSlideMoved(
+      delta - Math.abs(positionsMoved) * distanceBetweenSlides
+    );
 
-      if (delta < -distanceBetweenSlides) {
-        prevSlide();
-        setPositionsMoved(positionsMoved - 1);
-        setUpdated(true);
-      } else if (delta > distanceBetweenSlides) {
-        nextSlide();
-        setPositionsMoved(positionsMoved + 1);
-        setUpdated(true);
-      }
-    } else {
-      setIndividualSlideMoved(0);
+    if (
+      delta + Math.abs(positionsMoved) * distanceBetweenSlides <
+      -distanceBetweenSlides
+    ) {
+      prevSlide();
+      setPositionsMoved(positionsMoved - 1);
+      setUpdated(true);
+    } else if (
+      delta - Math.abs(positionsMoved) * distanceBetweenSlides >
+      distanceBetweenSlides
+    ) {
+      nextSlide();
+      setPositionsMoved(positionsMoved + 1);
+      setUpdated(true);
     }
 
     return () => {
@@ -222,27 +181,19 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
               ref={index === 0 ? firstSlide : index === 1 ? secondSlide : null}
             >
               <div className="slide-content">
-                <div className="cover" style={coverStyle(index)} />
+                <div className="cover" />
                 <p>{index}</p>
               </div>
             </div>
           ))}
         </div>
-        <div className="carousel-controls">
-          <div
-            className={`control left ${
-              controlDisabled === "left" ? "disabled" : ""
-            }`}
-            onClick={prevSlide}
-          />
-          <div
-            className={`control right ${
-              controlDisabled === "right" ? "disabled" : ""
-            }`}
-            onClick={nextSlide}
-          />
-        </div>
       </div>
+      <p>
+        {`(${
+          delta - Math.abs(positionsMoved) * distanceBetweenSlides
+        }) ${delta} - ${Math.abs(positionsMoved)} * ${distanceBetweenSlides} <
+      -${distanceBetweenSlides}`}
+      </p>
       <p>
         delta: <b>{delta} </b>
       </p>
@@ -264,6 +215,14 @@ const Carousel = ({ delta, dragging, initialPosition, currentPosition }) => {
       </p>
       <p>
         slideWidth: <b>{slideWidth}px</b>
+      </p>
+      <p>
+        slides:
+        <b>[{slides.map((_, index) => ` ${index},`)}]</b>
+      </p>
+      <p>
+        slices:
+        <b>[{slices.map(slice => `${slice >= 0 ? " " : ""}${slice},`)}]</b>
       </p>
     </div>
   );

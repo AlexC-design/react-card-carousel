@@ -130,6 +130,7 @@
   background-color: white;
   width: 110%;
   height: 110%;
+  opacity: 0;
   -webkit-transition: all 0s linear;
   transition: all 0s linear;
 }

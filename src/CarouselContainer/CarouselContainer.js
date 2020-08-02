@@ -25,12 +25,6 @@ class CarouselContainer extends React.Component {
     }
   };
 
-  componentDidUpdate() {
-    console.log("Parent CDU:");
-    console.log(" - delta:", this.state.delta);
-    console.log(" - initial mouse X:", this.state.initialPosition);
-    console.log(" - current mouse X:", this.state.currentPosition);
-  }
 
   handleClick = () => {
     console.log("%c touched ", "background: #000; color: #bada55");
