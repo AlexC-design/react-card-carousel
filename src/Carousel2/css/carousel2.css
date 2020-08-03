@@ -5,6 +5,13 @@
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
@@ -85,7 +92,7 @@
           align-items: center;
   color: white;
   font-weight: bolder;
-  font-size: 4rem;
+  font-size: 1rem;
   -webkit-box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
           box-shadow: 0 0 20px 0px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
@@ -120,5 +127,45 @@
   height: 110%;
   -webkit-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
+}
+
+.main-container .carousel-container .minimap {
+  position: absolute;
+  bottom: -30px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  width: 100%;
+}
+
+.main-container .carousel-container .minimap .dot {
+  border-radius: 2px;
+  margin: 0 5px;
+  width: 100%;
+  max-width: 50px;
+  height: 5px;
+  background-color: orange;
+  opacity: 0.3;
+  cursor: pointer;
+  -webkit-transition: all 0.4s ease-in-out;
+  transition: all 0.4s ease-in-out;
+}
+
+.main-container .carousel-container .minimap .dot.active {
+  opacity: 1;
+  cursor: default;
+  pointer-events: none;
+}
+
+.main-container.disable-animations * {
+  -webkit-transition: none !important;
+  transition: none !important;
 }
 /*# sourceMappingURL=carousel2.css.map */

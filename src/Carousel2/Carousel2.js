@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "./css/carousel2.css";
+import Slider from "../Slider/Slider";
 
 const Carousel = () => {
-  const [slideHeight, setSlideHeight] = useState(100);
-  const [slideWidth, setSlideWitdh] = useState(0);
-  const [preferredSlideWidth, setPreferredSlideWitdh] = useState(100);
-  const [carouselWidth, setCarouselWidth] = useState(900);
-  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [slideHeight, setSlideHeight] = useState(500);
+  const [slideWidth, setSlideWidth] = useState(0);
+  const [preferredSlideWidth, setPreferredSlideWidth] = useState(1000);
+  const [carouselWidth, setCarouselWidth] = useState(600);
   const [controlDisabled, setControlDisabled] = useState("none");
   const [slices, setSlices] = useState([]);
   const [slicePercentage, setSlicePercentage] = useState({ left: 1, right: 1 });
   const [slidePadding, setSlidePadding] = useState(0.95);
+  const [animationsOff, setAnimationsOff] = useState(false);
+  const [numberOfSlides, setNumberOfSlides] = useState(7);
+  const [distanceBetweenSlides, setDistanceBetweenSlides] = useState(10);
 
-  const slides = new Array(20).fill("test");
+  const slides = new Array(numberOfSlides).fill("test");
 
   // ------------------------- INDEX TO VALUES -------------------------
   const indexToPosition = index => {
@@ -20,7 +23,7 @@ const Carousel = () => {
       50 +
       slices[index] *
         (slicePercentage[slices[index] < 0 ? "left" : "right"] +
-          8 -
+          distanceBetweenSlides -
           Math.abs(slices[index]))
     );
   };
@@ -57,6 +60,12 @@ const Carousel = () => {
     };
   };
 
+  const activeSlideStyle = index => {
+    return {
+      ...slideStyle(index)
+    };
+  };
+
   const coverStyle = index => {
     return {
       opacity: indexToCoverOpacity(index)
@@ -73,6 +82,10 @@ const Carousel = () => {
     }px)`
   };
 
+  const toggleAnimations = () => {
+    setAnimationsOff(!animationsOff);
+  };
+
   // ------------------------- SLIDE FUNCTIONS -------------------------
   const disableControl = side => {
     setControlDisabled(side);
@@ -84,24 +97,37 @@ const Carousel = () => {
   const nextSlide = () => {
     let slicesArray = [...slices];
     setSlices([slicesArray.pop()].concat(slicesArray));
-
-    if (activeSlideIndex === slides.length - 1) {
-      setActiveSlideIndex(0);
-    } else {
-      setActiveSlideIndex(activeSlideIndex + 1);
-    }
     disableControl("right");
   };
   const prevSlide = () => {
     let slicesArray = [...slices];
     setSlices(slicesArray.concat(slicesArray.shift()));
-
-    if (activeSlideIndex === 0) {
-      setActiveSlideIndex(slides.length - 1);
-    } else {
-      setActiveSlideIndex(activeSlideIndex - 1);
-    }
     disableControl("left");
+  };
+
+  const jumpToSlide = index => {
+    let slicesArray = [];
+    let currentSlice = 0;
+
+    const incrementCurrentSlice = () => {
+      currentSlice < (slides.lenth - 1) / 2
+        ? currentSlice++
+        : currentSlice === (slides.length - 1) / 2
+        ? (currentSlice *= -1)
+        : currentSlice++;
+    };
+
+    for (let i = index; i <= slides.length - 1; i++) {
+      slicesArray[i] = currentSlice;
+      incrementCurrentSlice();
+    }
+
+    for (let i = 0; i < index; i++) {
+      slicesArray[i] = currentSlice;
+      incrementCurrentSlice();
+    }
+
+    setSlices(slicesArray);
   };
 
   // ------------------------- GESTURE SWIPE -------------------------
@@ -125,17 +151,16 @@ const Carousel = () => {
   }
 
   const handleClick = () => {
-    console.log("draging");
     window.addEventListener("mousemove", handleDrag);
   };
   const handleRelease = () => {
-    console.log("released");
     window.removeEventListener("mousemove", handleDrag);
   };
 
   // ------------------------- MOUNT -------------------------
   useEffect(() => {
     console.log("MOUNTED");
+
     //creating slices array [0, 1, 2 ... L/2 ... -2, -1]
     let slicesArray = [];
     for (let i = 0; i <= slides.length / 2; i++) {
@@ -157,10 +182,10 @@ const Carousel = () => {
     });
 
     // resize slide to fit screen width
-    setSlideWitdh(preferredSlideWidth);
+    setSlideWidth(preferredSlideWidth);
 
     if (window.innerWidth * slidePadding < preferredSlideWidth) {
-      setSlideWitdh(window.innerWidth * slidePadding);
+      setSlideWidth(window.innerWidth * slidePadding);
     }
   }, []);
 
@@ -172,9 +197,9 @@ const Carousel = () => {
     window.addEventListener("resize", () => {
       timeoutId = setTimeout(() => {
         if (window.innerWidth * slidePadding <= preferredSlideWidth) {
-          setSlideWitdh(window.innerWidth * slidePadding);
+          setSlideWidth(window.innerWidth * slidePadding);
         } else {
-          setSlideWitdh(preferredSlideWidth);
+          setSlideWidth(preferredSlideWidth);
         }
       }, 500);
     });
@@ -187,14 +212,24 @@ const Carousel = () => {
 
   return (
     <div
-      className="main-container"
-      onMouseDown={handleClick}
-      onMouseUp={handleRelease}
+      className={`main-container ${animationsOff ? "disable-animations" : ""}`}
     >
-      <div className="carousel-container">
+      <div
+        className="carousel-container"
+        onMouseDown={handleClick}
+        onMouseUp={handleRelease}
+      >
         <div className="slides-container" style={slidesContainerStyle}>
           {slides.map((slide, index) => (
-            <div className="slide" key={index} style={slideStyle(index)}>
+            <div
+              className={`slide ${slices[index] === 0 ? "active" : ""}`}
+              key={index}
+              style={
+                slices[index] === 0
+                  ? activeSlideStyle(index)
+                  : slideStyle(index)
+              }
+            >
               <div className="slide-content">
                 <div className="cover" style={coverStyle(index)} />
                 <p>{index}</p>
@@ -217,6 +252,54 @@ const Carousel = () => {
             onClick={nextSlide}
           />
         </div>
+        <div className="minimap">
+          {slices.map((slice, index) => (
+            <div
+              className={`dot ${slice === 0 ? "active" : ""}`}
+              onClick={() => jumpToSlide(index)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p style={{ marginTop: "50px" }}>
+        slices:
+        <b>[{slices.map(slice => `${slice >= 0 ? " " : ""}${slice},`)}]</b>
+      </p>
+
+      <div
+        className="properties-controls"
+        onMouseDown={toggleAnimations}
+        onMouseUp={toggleAnimations}
+      >
+        <Slider
+          value={preferredSlideWidth}
+          handleInputChange={setPreferredSlideWidth}
+          label={"preferredSlideWidth"}
+        />
+        <Slider
+          value={slideWidth}
+          handleInputChange={setSlideWidth}
+          label={"slideWidth"}
+        />
+        <Slider
+          value={slideHeight}
+          handleInputChange={setSlideHeight}
+          max={1000}
+          label={"slideHeight"}
+        />
+        <Slider
+          value={numberOfSlides}
+          handleInputChange={setNumberOfSlides}
+          max={100}
+          label={"numberOfSlides"}
+        />
+        <Slider
+          value={distanceBetweenSlides}
+          handleInputChange={setDistanceBetweenSlides}
+          max={20}
+          label={"distanceBetweenSlides"}
+        />
       </div>
     </div>
   );
