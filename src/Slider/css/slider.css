@@ -6,7 +6,7 @@
   -webkit-box-direction: normal;
       -ms-flex-direction: column;
           flex-direction: column;
-  width: 200px;
+  width: 210px;
   margin: 10px;
 }
 
@@ -49,6 +49,7 @@
 }
 
 .control-container .controls .control-input {
+  margin-left: 10px;
   width: 20%;
 }
 

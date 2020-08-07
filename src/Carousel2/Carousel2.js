@@ -5,15 +5,16 @@ import Slider from "../Slider/Slider";
 const Carousel = () => {
   const [slideHeight, setSlideHeight] = useState(500);
   const [slideWidth, setSlideWidth] = useState(0);
-  const [preferredSlideWidth, setPreferredSlideWidth] = useState(1000);
-  const [carouselWidth, setCarouselWidth] = useState(600);
+  const [preferredSlideWidth, setPreferredSlideWidth] = useState(500);
+  const [carouselWidth, setCarouselWidth] = useState(200);
   const [controlDisabled, setControlDisabled] = useState("none");
   const [slices, setSlices] = useState([]);
   const [slicePercentage, setSlicePercentage] = useState({ left: 1, right: 1 });
-  const [slidePadding, setSlidePadding] = useState(0.95);
   const [animationsOff, setAnimationsOff] = useState(false);
   const [numberOfSlides, setNumberOfSlides] = useState(7);
   const [distanceBetweenSlides, setDistanceBetweenSlides] = useState(10);
+  const [swipeEnabled, setSwipeEnabled] = useState(false);
+  const [slidesContainerStyle, setSlidesContainerStyle] = useState({});
 
   const slides = new Array(numberOfSlides).fill("test");
 
@@ -72,28 +73,11 @@ const Carousel = () => {
     };
   };
 
-  const slidesContainerStyle = {
-    width: carouselWidth,
-    height: slideHeight,
-    transform: `translateX(-${
-      window.innerWidth > slideWidth
-        ? slideWidth / 2
-        : (window.innerWidth * slidePadding) / 2
-    }px)`
-  };
-
   const toggleAnimations = () => {
     setAnimationsOff(!animationsOff);
   };
 
   // ------------------------- SLIDE FUNCTIONS -------------------------
-  const disableControl = side => {
-    setControlDisabled(side);
-    setTimeout(() => {
-      setControlDisabled("none");
-    }, 300);
-  };
-
   const nextSlide = () => {
     let slicesArray = [...slices];
     setSlices([slicesArray.pop()].concat(slicesArray));
@@ -128,6 +112,13 @@ const Carousel = () => {
     }
 
     setSlices(slicesArray);
+  };
+
+  const disableControl = side => {
+    setControlDisabled(side);
+    setTimeout(() => {
+      setControlDisabled("none");
+    }, 300);
   };
 
   // ------------------------- GESTURE SWIPE -------------------------
@@ -184,31 +175,47 @@ const Carousel = () => {
     // resize slide to fit screen width
     setSlideWidth(preferredSlideWidth);
 
-    if (window.innerWidth * slidePadding < preferredSlideWidth) {
-      setSlideWidth(window.innerWidth * slidePadding);
+    if (window.innerWidth < preferredSlideWidth) {
+      setSlideWidth(window.innerWidth);
     }
-  }, []);
+  }, [preferredSlideWidth, carouselWidth]);
+
+  //--------------------- UPDATE SLIDES CONTAINER STYLE (NOT WORKING)
+  useEffect(() => {
+    setSlidesContainerStyle({
+      width: carouselWidth,
+      height: slideHeight,
+      transform: `translateX(-${
+        window.innerWidth > slideWidth ? slideWidth / 2 : window.innerWidth / 2
+      }px)`
+    });
+    console.log(slidesContainerStyle);
+  }, [slideHeight, slideWidth]);
 
   // ------------------------- UPDATE -------------------------
   useEffect(() => {
     console.log("UPDATING");
 
     let timeoutId;
-    window.addEventListener("resize", () => {
+
+    const handleResize = () => {
       timeoutId = setTimeout(() => {
-        if (window.innerWidth * slidePadding <= preferredSlideWidth) {
-          setSlideWidth(window.innerWidth * slidePadding);
-        } else {
+        if (window.innerWidth <= preferredSlideWidth) {
+          setSlideWidth(window.innerWidth);
+        } else if (slideWidth !== preferredSlideWidth) {
           setSlideWidth(preferredSlideWidth);
         }
       }, 500);
-    });
+    };
+
+    window.addEventListener("resize", handleResize);
 
     return () => {
       clearTimeout(timeoutId);
+      window.removeEventListener("resize", handleResize);
       handleRelease();
     };
-  });
+  }, [preferredSlideWidth]);
 
   return (
     <div
@@ -216,8 +223,8 @@ const Carousel = () => {
     >
       <div
         className="carousel-container"
-        onMouseDown={handleClick}
-        onMouseUp={handleRelease}
+        onMouseDown={swipeEnabled ? handleClick : null}
+        onMouseUp={swipeEnabled ? handleRelease : null}
       >
         <div className="slides-container" style={slidesContainerStyle}>
           {slides.map((slide, index) => (
@@ -299,6 +306,12 @@ const Carousel = () => {
           handleInputChange={setDistanceBetweenSlides}
           max={20}
           label={"distanceBetweenSlides"}
+        />
+        <Slider
+          value={carouselWidth}
+          handleInputChange={setCarouselWidth}
+          max={1000}
+          label={"carouselWidth"}
         />
       </div>
     </div>

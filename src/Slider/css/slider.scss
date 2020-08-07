@@ -1,7 +1,7 @@
 .control-container {
   display: flex;
   flex-direction: column;
-  width: 200px;
+  width: 210px;
   margin: 10px;
 
   .control-label {
@@ -40,6 +40,7 @@
     }
 
     .control-input {
+      margin-left: 10px;
       width: 20%;
 
       &::-webkit-inner-spin-button {
